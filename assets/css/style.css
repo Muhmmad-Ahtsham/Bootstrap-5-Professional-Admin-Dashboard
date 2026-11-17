@@ -1,0 +1,34 @@
+/* Custom CSS kept small on purpose: Bootstrap utility classes do most of the work. */
+
+/* Sidebar stays in view on large screens (below lg it is an offcanvas) */
+@media (min-width: 992px) {
+  .sidebar-sticky {
+    position: sticky;
+    top: 56px;                       /* height of the navbar */
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+}
+
+.sidebar .nav-link { color: var(--bs-body-color); border-radius: .5rem; }
+.sidebar .nav-link:hover { background-color: var(--bs-tertiary-bg); }
+.sidebar .nav-link.active { background-color: var(--bs-primary); color: #fff; }
+
+/* Initials circle in tables */
+.avatar { width: 2.25rem; height: 2.25rem; font-size: .8rem; }
+.avatar-lg { width: 4rem; height: 4rem; font-size: 1.4rem; }
+
+/* KPI icon */
+.kpi-icon { font-size: 2rem; line-height: 1; opacity: .85; }
+
+/* Readable "Late" button: Bootstrap's default yellow text on white has too little contrast */
+.btn-outline-warning.btn-late { --bs-btn-color: #7a5c00; --bs-btn-hover-color: #000; --bs-btn-active-color: #000; }
+
+/* Stop long attendance buttons from forcing the page wider on phones */
+.btn-group-sm > .btn { white-space: nowrap; }
+
+@media print {
+  .sidebar-sticky, .navbar { display: none !important; }
+  main { width: 100% !important; margin: 0 !important; max-width: 100% !important; flex: 0 0 100% !important; }
+  .card { border: 1px solid #ccc !important; box-shadow: none !important; }
+}

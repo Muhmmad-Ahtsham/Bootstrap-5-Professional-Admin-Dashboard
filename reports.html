@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reports - Student Admin Dashboard (Bootstrap 5).">
+  <title>Reports | Student Admin</title>
+  <link rel="icon" href="data:,">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- Top navbar -->
+  <nav class="navbar navbar-dark bg-dark sticky-top flex-nowrap p-0 shadow" style="min-height:56px">
+    <div class="container-fluid">
+      <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand me-auto" href="index.html"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</a>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle me-1" aria-hidden="true"></i><span class="d-none d-sm-inline">Admin</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text small text-body-secondary">Signed in as<br><strong class="text-body">admin@university.edu</strong><br>(demo account)</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="students.html">Manage students</a></li>
+          <li><a class="dropdown-item" href="reports.html">View reports</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar: static column on lg+, offcanvas below lg -->
+      <div class="col-lg-2 p-0 border-end bg-body sidebar-sticky sidebar">
+        <div class="offcanvas-lg offcanvas-start bg-body" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+          <div class="offcanvas-header border-bottom">
+            <h2 class="offcanvas-title h5" id="sidebarLabel"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close menu"></button>
+          </div>
+          <div class="offcanvas-body d-flex flex-column p-3">
+            <p class="text-uppercase small fw-semibold text-body-secondary mb-2 px-2">Menu</p>
+            <ul class="nav flex-column gap-1">
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="index.html"><i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="students.html"><i class="bi bi-people" aria-hidden="true"></i> Students</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="courses.html"><i class="bi bi-journal-bookmark" aria-hidden="true"></i> Courses</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="attendance.html"><i class="bi bi-calendar-check" aria-hidden="true"></i> Attendance</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 active" href="reports.html" aria-current="page"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> Reports</a></li>
+            </ul>
+            <hr class="my-3">
+            <p class="small text-body-secondary px-2 mb-0">Data is stored in this browser (<code>localStorage</code>) and shared with the Lab 6 student app.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="col-lg-10 ms-auto px-3 px-md-4 py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h1 class="h3 mb-0">Reports</h1>
+          <div class="d-flex flex-wrap gap-2 d-print-none">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnCsv"><i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>Export CSV</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnPrint"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print report</button>
+          </div>
+        </div>
+
+        <div id="alertHost" aria-live="polite"></div>
+
+        <div id="storageWarning" class="alert alert-danger d-none" role="alert">
+          <strong>Stored student data could not be read.</strong> The <code>students</code> value in localStorage is not valid JSON, so it is being ignored. Saving a student will replace it.
+        </div>
+        <div id="noDataAlert" class="alert alert-info d-flex flex-wrap align-items-center gap-2 d-none" role="status">
+          <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+          <span class="me-auto">No student data found in this browser. Add a student, or load sample data to explore the dashboard.</span>
+          <button type="button" class="btn btn-sm btn-info" id="btnSample">Load sample data</button>
+        </div>
+
+        <p class="text-body-secondary" id="reportDate"></p>
+
+        <section aria-label="Summary">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex justify-content-between align-items-start">
+              <div><h2 class="h6 text-body-secondary">Total students</h2><p class="display-6 mb-1 fs-2" id="rTotal">0</p><small class="text-body-secondary" id="rTotalNote"></small></div>
+              <span class="kpi-icon text-primary" aria-hidden="true"><i class="bi bi-people-fill"></i></span>
+            </div></div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex justify-content-between align-items-start">
+              <div><h2 class="h6 text-body-secondary">Active departments</h2><p class="display-6 mb-1 fs-2" id="rDepts">0</p><small class="text-body-secondary" id="rDeptsNote"></small></div>
+              <span class="kpi-icon text-success" aria-hidden="true"><i class="bi bi-building"></i></span>
+            </div></div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex justify-content-between align-items-start">
+              <div><h2 class="h6 text-body-secondary">Largest department</h2><p class="display-6 mb-1 fs-4 py-1" id="rLargest">0</p><small class="text-body-secondary" id="rLargestNote"></small></div>
+              <span class="kpi-icon text-warning" aria-hidden="true"><i class="bi bi-trophy-fill"></i></span>
+            </div></div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm"><div class="card-body d-flex justify-content-between align-items-start">
+              <div><h2 class="h6 text-body-secondary">Average attendance</h2><p class="display-6 mb-1 fs-2" id="rAttendance">0</p><small class="text-body-secondary" id="rAttendanceNote"></small></div>
+              <span class="kpi-icon text-info" aria-hidden="true"><i class="bi bi-calendar-check-fill"></i></span>
+            </div></div>
+          </div>
+        </div>
+        </section>
+
+        <section class="card shadow-sm mb-3" aria-labelledby="matrixTitle">
+          <div class="card-header bg-body"><h2 class="h6 mb-0" id="matrixTitle">Students by department and semester</h2></div>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <caption class="visually-hidden">Number of students per department and semester</caption>
+              <thead class="table-light" id="matrixHead"></thead>
+              <tbody id="matrixBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card shadow-sm" aria-labelledby="sumTitle">
+          <div class="card-header bg-body"><h2 class="h6 mb-0" id="sumTitle">Department summary</h2></div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <caption class="visually-hidden">Department summary with share of students and attendance</caption>
+              <thead class="table-light"><tr>
+                <th scope="col">Department</th><th scope="col" class="text-center">Students</th><th scope="col">Share</th>
+                <th scope="col" class="text-center d-none d-sm-table-cell">Present / Late / Absent</th><th scope="col" class="text-end">Attendance</th>
+              </tr></thead>
+              <tbody id="summaryBody"></tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-body"><small class="text-body-secondary">Attendance % = (Present + Late) &divide; all marks recorded, across every saved date.</small></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Dashboard - Student Admin Dashboard (Bootstrap 5).">
+  <title>Dashboard | Student Admin</title>
+  <link rel="icon" href="data:,">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- Top navbar -->
+  <nav class="navbar navbar-dark bg-dark sticky-top flex-nowrap p-0 shadow" style="min-height:56px">
+    <div class="container-fluid">
+      <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand me-auto" href="index.html"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</a>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle me-1" aria-hidden="true"></i><span class="d-none d-sm-inline">Admin</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text small text-body-secondary">Signed in as<br><strong class="text-body">admin@university.edu</strong><br>(demo account)</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="students.html">Manage students</a></li>
+          <li><a class="dropdown-item" href="reports.html">View reports</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar: static column on lg+, offcanvas below lg -->
+      <div class="col-lg-2 p-0 border-end bg-body sidebar-sticky sidebar">
+        <div class="offcanvas-lg offcanvas-start bg-body" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+          <div class="offcanvas-header border-bottom">
+            <h2 class="offcanvas-title h5" id="sidebarLabel"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close menu"></button>
+          </div>
+          <div class="offcanvas-body d-flex flex-column p-3">
+            <p class="text-uppercase small fw-semibold text-body-secondary mb-2 px-2">Menu</p>
+            <ul class="nav flex-column gap-1">
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 active" href="index.html" aria-current="page"><i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="students.html"><i class="bi bi-people" aria-hidden="true"></i> Students</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="courses.html"><i class="bi bi-journal-bookmark" aria-hidden="true"></i> Courses</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="attendance.html"><i class="bi bi-calendar-check" aria-hidden="true"></i> Attendance</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="reports.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> Reports</a></li>
+            </ul>
+            <hr class="my-3">
+            <p class="small text-body-secondary px-2 mb-0">Data is stored in this browser (<code>localStorage</code>) and shared with the Lab 6 student app.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="col-lg-10 ms-auto px-3 px-md-4 py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h1 class="h3 mb-0">Dashboard</h1>
+          
+        </div>
+
+        <div id="alertHost" aria-live="polite"></div>
+
+        <div id="storageWarning" class="alert alert-danger d-none" role="alert">
+          <strong>Stored student data could not be read.</strong> The <code>students</code> value in localStorage is not valid JSON, so it is being ignored. Saving a student will replace it.
+        </div>
+        <div id="noDataAlert" class="alert alert-info d-flex flex-wrap align-items-center gap-2 d-none" role="status">
+          <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+          <span class="me-auto">No student data found in this browser. Add a student, or load sample data to explore the dashboard.</span>
+          <button type="button" class="btn btn-sm btn-info" id="btnSample">Load sample data</button>
+        </div>
+
+        <section aria-label="Key figures">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h6 text-body-secondary">Students</h2>
+                  <p class="display-6 mb-1" id="kpiStudents">0</p>
+                  <small class="text-body-secondary" id="kpiStudentsNote"></small>
+                </div>
+                <span class="kpi-icon text-primary" aria-hidden="true"><i class="bi bi-people-fill"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h6 text-body-secondary">Departments</h2>
+                  <p class="display-6 mb-1" id="kpiDepartments">0</p>
+                  <small class="text-body-secondary" id="kpiDepartmentsNote"></small>
+                </div>
+                <span class="kpi-icon text-success" aria-hidden="true"><i class="bi bi-building"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h6 text-body-secondary">Courses</h2>
+                  <p class="display-6 mb-1" id="kpiCourses">0</p>
+                  <small class="text-body-secondary" id="kpiCoursesNote"></small>
+                </div>
+                <span class="kpi-icon text-warning" aria-hidden="true"><i class="bi bi-journal-bookmark-fill"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h6 text-body-secondary">Attendance rate</h2>
+                  <p class="display-6 mb-1" id="kpiAttendance">0</p>
+                  <small class="text-body-secondary" id="kpiAttendanceNote"></small>
+                </div>
+                <span class="kpi-icon text-info" aria-hidden="true"><i class="bi bi-calendar-check-fill"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        </section>
+
+        <section class="card shadow-sm mb-3" aria-label="Filters">
+          <div class="card-body">
+            <div class="row g-2 align-items-end">
+              <div class="col-12 col-md-4">
+                <label for="fSearch" class="form-label small mb-1">Search</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                  <input type="search" id="fSearch" class="form-control" placeholder="Name or email" autocomplete="off">
+                </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <label for="fDept" class="form-label small mb-1">Department</label>
+                <select id="fDept" class="form-select"></select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-2">
+                <label for="fSem" class="form-label small mb-1">Semester</label>
+                <select id="fSem" class="form-select"></select>
+              </div>
+              <div class="col-12 col-md-auto">
+                <button type="button" id="fReset" class="btn btn-outline-secondary w-100"><i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Reset</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="row g-3">
+          <div class="col-12 col-xxl-8">
+        <section class="card shadow-sm" aria-labelledby="tableTitle">
+          <div class="card-header bg-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h2 class="h6 mb-0" id="tableTitle">Recent students</h2>
+            <button type="button" class="btn btn-primary btn-sm" data-action="add"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Student</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <caption class="visually-hidden">Recent students</caption>
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Student</th>
+                  <th scope="col" class="d-none d-md-table-cell">Email</th>
+                  <th scope="col" class="d-none d-sm-table-cell">Department</th>
+                  <th scope="col" class="text-center">Sem</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsBody"></tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-body d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <small id="pageInfo" class="text-body-secondary" aria-live="polite"></small>
+            <nav aria-label="Student pages"><ul class="pagination pagination-sm mb-0" id="pagination"></ul></nav>
+          </div>
+        </section>
+
+          </div>
+          <div class="col-12 col-xxl-4">
+            <section class="card shadow-sm h-100" aria-labelledby="deptTitle">
+              <div class="card-header bg-body"><h2 class="h6 mb-0" id="deptTitle">Students by department</h2></div>
+              <div class="card-body" id="deptBars"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add / Edit student -->
+  <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content" id="studentForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="studentModalTitle">Add Student</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="studentId">
+          <div class="mb-3">
+            <label for="sName" class="form-label">Full name</label>
+            <input type="text" class="form-control" id="sName" required minlength="2" maxlength="60" autocomplete="off">
+            <div class="invalid-feedback">Enter a name of at least 2 characters.</div>
+          </div>
+          <div class="mb-3">
+            <label for="sEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="sEmail" required maxlength="100" autocomplete="off" placeholder="name@example.com">
+            <div class="invalid-feedback" id="sEmailFeedback">Enter a valid email address.</div>
+          </div>
+          <div class="row g-3">
+            <div class="col-sm-7">
+              <label for="sDepartment" class="form-label">Department</label>
+              <select class="form-select" id="sDepartment" required></select>
+              <div class="invalid-feedback">Choose a department.</div>
+            </div>
+            <div class="col-sm-5">
+              <label for="sSemester" class="form-label">Semester</label>
+              <select class="form-select" id="sSemester" required></select>
+              <div class="invalid-feedback">Choose a semester.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="studentSubmit">Add student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View student -->
+  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="viewModalTitle">Student Details</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="viewBody"></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirmation -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="deleteModalTitle">Delete student?</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">You are about to delete <strong id="deleteName"></strong>. This cannot be undone.</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/students.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script>StudentsTable.init({ pageSize: 5 });</script>
+</body>
+</html>

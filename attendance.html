@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Attendance - Student Admin Dashboard (Bootstrap 5).">
+  <title>Attendance | Student Admin</title>
+  <link rel="icon" href="data:,">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+
+  <!-- Top navbar -->
+  <nav class="navbar navbar-dark bg-dark sticky-top flex-nowrap p-0 shadow" style="min-height:56px">
+    <div class="container-fluid">
+      <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand me-auto" href="index.html"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</a>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle me-1" aria-hidden="true"></i><span class="d-none d-sm-inline">Admin</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text small text-body-secondary">Signed in as<br><strong class="text-body">admin@university.edu</strong><br>(demo account)</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="students.html">Manage students</a></li>
+          <li><a class="dropdown-item" href="reports.html">View reports</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar: static column on lg+, offcanvas below lg -->
+      <div class="col-lg-2 p-0 border-end bg-body sidebar-sticky sidebar">
+        <div class="offcanvas-lg offcanvas-start bg-body" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+          <div class="offcanvas-header border-bottom">
+            <h2 class="offcanvas-title h5" id="sidebarLabel"><i class="bi bi-mortarboard-fill text-warning me-2" aria-hidden="true"></i>Student Admin</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close menu"></button>
+          </div>
+          <div class="offcanvas-body d-flex flex-column p-3">
+            <p class="text-uppercase small fw-semibold text-body-secondary mb-2 px-2">Menu</p>
+            <ul class="nav flex-column gap-1">
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="index.html"><i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="students.html"><i class="bi bi-people" aria-hidden="true"></i> Students</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="courses.html"><i class="bi bi-journal-bookmark" aria-hidden="true"></i> Courses</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2 active" href="attendance.html" aria-current="page"><i class="bi bi-calendar-check" aria-hidden="true"></i> Attendance</a></li>
+            <li class="nav-item"><a class="nav-link d-flex align-items-center gap-2" href="reports.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> Reports</a></li>
+            </ul>
+            <hr class="my-3">
+            <p class="small text-body-secondary px-2 mb-0">Data is stored in this browser (<code>localStorage</code>) and shared with the Lab 6 student app.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="col-lg-10 ms-auto px-3 px-md-4 py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h1 class="h3 mb-0">Attendance</h1>
+          
+        </div>
+
+        <div id="alertHost" aria-live="polite"></div>
+
+        <div id="storageWarning" class="alert alert-danger d-none" role="alert">
+          <strong>Stored student data could not be read.</strong> The <code>students</code> value in localStorage is not valid JSON, so it is being ignored. Saving a student will replace it.
+        </div>
+        <div id="noDataAlert" class="alert alert-info d-flex flex-wrap align-items-center gap-2 d-none" role="status">
+          <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+          <span class="me-auto">No student data found in this browser. Add a student, or load sample data to explore the dashboard.</span>
+          <button type="button" class="btn btn-sm btn-info" id="btnSample">Load sample data</button>
+        </div>
+
+        <section class="card shadow-sm mb-3" aria-label="Attendance settings">
+          <div class="card-body">
+            <div class="row g-2 align-items-end">
+              <div class="col-12 col-sm-6 col-md-3"><label for="attDate" class="form-label small mb-1">Date</label><input type="date" id="attDate" class="form-control"></div>
+              <div class="col-12 col-sm-6 col-md-4"><label for="attDept" class="form-label small mb-1">Department</label><select id="attDept" class="form-select"></select></div>
+              <div class="col-12 col-md-5"><label for="attSearch" class="form-label small mb-1">Search student</label><input type="search" id="attSearch" class="form-control" placeholder="Name" autocomplete="off"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-md-4 col-xl"><div class="card h-100 shadow-sm border-success"><div class="card-body py-3"><h2 class="h6 text-body-secondary mb-1">Present</h2><p class="fs-2 mb-0" id="cntP">0</p></div></div></div>
+          <div class="col-6 col-md-4 col-xl"><div class="card h-100 shadow-sm border-warning"><div class="card-body py-3"><h2 class="h6 text-body-secondary mb-1">Late</h2><p class="fs-2 mb-0" id="cntL">0</p></div></div></div>
+          <div class="col-6 col-md-4 col-xl"><div class="card h-100 shadow-sm border-danger"><div class="card-body py-3"><h2 class="h6 text-body-secondary mb-1">Absent</h2><p class="fs-2 mb-0" id="cntA">0</p></div></div></div>
+          <div class="col-6 col-md-4 col-xl"><div class="card h-100 shadow-sm border-secondary"><div class="card-body py-3"><h2 class="h6 text-body-secondary mb-1">Not marked</h2><p class="fs-2 mb-0" id="cntU">0</p></div></div></div>
+          <div class="col-6 col-md-4 col-xl"><div class="card h-100 shadow-sm border-info"><div class="card-body py-3"><h2 class="h6 text-body-secondary mb-1">Attendance rate</h2><p class="fs-2 mb-0" id="cntRate">0</p></div></div></div>
+        </div>
+
+        <section class="card shadow-sm" aria-labelledby="attTitle">
+          <div class="card-header bg-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h2 class="h6 mb-0" id="attTitle">Mark attendance</h2>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-success btn-sm" id="btnAllPresent">Mark all present</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btnSaveAtt" disabled><i class="bi bi-save me-1" aria-hidden="true"></i>Save attendance</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <caption class="visually-hidden">Attendance for the selected date</caption>
+              <thead class="table-light"><tr><th scope="col">Student</th><th scope="col" class="d-none d-md-table-cell">Department</th><th scope="col" class="text-end">Status</th></tr></thead>
+              <tbody id="attBody"></tbody>
+            </table>
+          </div>
+          <div class="card-footer bg-body"><small class="text-body-secondary">Late counts as attended in the attendance rate.</small></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/attendance.js"></script>
+</body>
+</html>
